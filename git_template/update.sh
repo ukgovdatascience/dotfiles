@@ -8,6 +8,5 @@ main()
         echo "This script is supposed to be run at the root of a git repository" >&2
     fi
     rsync --archive --verbose --compress --cvs-exclude "$templateDir/hooks/" .git/hooks --delete
-    cp -f "$templateDir/configure.sh" .git
 }
 main
