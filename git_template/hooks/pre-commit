@@ -1,0 +1,38 @@
+#!/bin/zsh
+
+if [ -z "${GIT_ALLOW_AWS_KEYS}" ]; then
+
+    if git rev-parse --verify HEAD >/dev/null 2>&1
+    then
+        against=HEAD
+    else
+        # Initial commit: diff against an empty tree object
+        against=$(git hash-object -t tree /dev/null)
+    fi
+    
+    # key match regex from http://blogs.aws.amazon.com/security/blog/tag/key+rotation
+    MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | grep -c -P '((?<![A-Z0-9])[A-Z0-9]{20}(?![A-Z0-9])|(?<![A-Za-z0-9/+=])[A-Za-z0-9/+=]{40}(?![A-Za-z0-9/+=]))')
+    
+    if [[ $MATCH -ne 0 ]]; then
+        echo "Found patterns for AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY"
+        echo "Please check your code and remove API keys."
+        echo "If you really want to commit this:\n\n\tGIT_ALLOW_AWS_KEYS=1 git commit"
+        exit 1
+    fi
+
+fi
+
+[ ! -z "${GIT_ALLOW_MASTER}" ] && exit 0
+
+if test $(git rev-parse --abbrev-ref HEAD) = "master" ; then
+    echo -e "Cannot commit to master by default.\nIf you really think want to then do\n\n\tGIT_ALLOW_MASTER=1 git commit\n"
+    exit 1
+fi
+
+# Local Variables:
+# mode: Shell-Script
+# sh-indentation: 2
+# indent-tabs-mode: nil
+# sh-basic-offset: 2
+# End:
+# vim: ft=zsh sw=2 ts=2 et
