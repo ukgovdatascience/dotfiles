@@ -1,22 +1,52 @@
 #!/bin/zsh
 
+# set against for comparisons
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+    against=HEAD
+else
+    # Initial commit: diff against an empty tree object
+    against=$(git hash-object -t tree /dev/null)
+fi
+
+
 if [ -z "${GIT_ALLOW_AWS_KEYS}" ]; then
 
-    if git rev-parse --verify HEAD >/dev/null 2>&1
-    then
-        against=HEAD
-    else
-        # Initial commit: diff against an empty tree object
-        against=$(git hash-object -t tree /dev/null)
-    fi
-    
     # key match regex from http://blogs.aws.amazon.com/security/blog/tag/key+rotation
     MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | grep -c -P '((?<![A-Z0-9])[A-Z0-9]{20}(?![A-Z0-9])|(?<![A-Za-z0-9/+=])[A-Za-z0-9/+=]{40}(?![A-Za-z0-9/+=]))')
-    
+
     if [[ $MATCH -ne 0 ]]; then
         echo "Found patterns for AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY"
         echo "Please check your code and remove API keys."
         echo "If you really want to commit this:\n\n\tGIT_ALLOW_AWS_KEYS=1 git commit"
+        exit 1
+    fi
+
+fi
+
+if [ -z "${GIT_ALLOW_PRIVATE_KEYS}" ]; then
+
+    # key match regex from http://blogs.aws.amazon.com/security/blog/tag/key+rotation
+    MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | grep -c ' PRIVATE KEY')
+
+    if [[ $MATCH -ne 0 ]]; then
+        echo "It looks like you're trying to commit a private key."
+        echo "Please check your code and remove any private keys."
+        echo "If you really want to commit this:\n\n\tGIT_ALLOW_PRIVATE_KEYS=1 git commit"
+        exit 1
+    fi
+
+fi
+
+if [ -z "${GIT_ALLOW_PEM_FILES}" ]; then
+
+    # key match regex from http://blogs.aws.amazon.com/security/blog/tag/key+rotation
+    MATCH=$(git diff --cached --name-only $against | grep -P '.pem$')
+
+    if [[ ! -z $MATCH ]]; then
+        echo "It looks like you're trying to commit a PEM file."
+        echo "Please check your code and remove any PEM files."
+        echo "If you really want to commit this:\n\n\tGIT_ALLOW_PEM_FILES=1 git commit"
         exit 1
     fi
 
