@@ -20,9 +20,9 @@ if [ -z "${GIT_ALLOW_DATA}" ]; then
     MATCH=$(git diff --cached --name-only $against | grep -i -P $REG)
 
     if [[ ! -z $MATCH ]]; then
-        echo -e "\nIt looks like you're trying to commit a file which has been\nlabelled 'OFFICIAL':\n"
+        echo -e "\nIt looks like you're trying to commit a data file':\n"
         echo -e "$MATCH"
-        echo -e "\nCheck to ensure that it is ok to commit the file, then run:\n\n\tGIT_ALLOW_OFFICIAL=1 git commit\n\n"
+        echo -e "\nCheck to ensure that it is ok to commit the file, then run:\n\n\tGIT_ALLOW_DATA=1 git commit\n\n"
         echo -e "You can stack these commands if required, like:\n\n\tGIT_ALLOW_DATA=1 GIT_ALLOW_OFFICIAL=1 git commit\n\n"
         exit 1
     fi
