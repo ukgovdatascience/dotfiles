@@ -4,7 +4,7 @@
 
 This repo contains:
 
-* A template global [.gitignore](.gitignore_global) file which will prevent git from seeing the most commonly used data formats.
+* A template [.gitignore](.gitignore) file which will prevent git from seeing the most commonly used data formats.
 * A `git_template` which, if used, will install a [pre-commit](git_template/hooks/pre-commit) and [pre-push](git_template/hooks/pre-push) hook into all new repositories to prevent data in common formats from being commited or pushed by accident.
 
 If used correctly, the templates here will:
@@ -89,7 +89,7 @@ cp -R git_template ~/.git_template
 git config --global init.templatedir '~/.git_template'
 
 ```
-#### Install into any pre-existing respositories
+#### Install into any pre-existing repositories
 
 Having done the previous step, run the following to sync git hooks with the defaults in `~/.git_template`:
 
@@ -97,7 +97,7 @@ Having done the previous step, run the following to sync git hooks with the defa
 $(git config --path --get init.templatedir)/update.sh
 ```
 
-#### Install intall all pre-existing respoisitories in a directory
+#### Install intall all pre-existing repositories in a directory
 
 The following code will cycle through all directories in a folder (assuming they are all managed by git), and install the default hooks into each of them:
 
