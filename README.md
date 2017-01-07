@@ -23,16 +23,9 @@ git clone https://github.com/ukgovdatascience/dotfiles
 cd dotfiles
 ```
 
-### global .gitignore
+### Template .gitignore
 
-To set [.gitignore_global](.gitignore_global) as default for all new repositories:
-
-```
-cp .gitignore_global ~/
-git config --global core.excludesfile ~/.gitignore_global
-```
-
-Doing so will condition git to ignore the following files in all new repos:
+A template [.gitignore](.gitignore) file is included in the repository. Using this file will condition git to ignore the following file formats:
 
 * Any file containing the word `OFFICIAL`
 * Common text file formats: csv, txt
@@ -50,6 +43,29 @@ Additional file formats copied from https://gist.github.com/octocat/9257657:
 
 * Compressed file formats
 * Common system files (e.g. thumbs.db)
+
+There are a number of ways one might use the [.gitignore](.gitignore) file:
+
+#### Copy into the root of a repository
+
+Copy the file into the root of a git repository and edit as approproate.
+
+#### Set as .gitignore_global
+
+To use for ALL git repos, the template can be set globally. Note that this is likely to be very annoying in its current form, so should be edited as appropriate, otherwise trivial files are likely to be invisible to git. Even ignored files can be added with `git add -f`, however you need to realise that they are being ignored!
+
+```bash
+cp .gitignore ~/.gitignore_global
+git config --global core.excludesfile ~/.gitignore_global
+```
+
+Note that if you set this as the `.gitignore_global`, you can exclude individual repositories by running:
+
+```bash
+git config --local --unset core.excludesfile
+```
+
+The above can be used with `--global` to stop using it as the global `.gitignore`.
 
 More information about ignoring files can be found here: https://help.github.com/articles/ignoring-files/
 
