@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # set against for comparisons
 if git rev-parse --verify HEAD >/dev/null 2>&1
@@ -10,54 +10,102 @@ else
 fi
 
 
-if [ -z "${GIT_ALLOW_AWS_KEYS}" ]; then
+# Check for common data formats #
+#################################
 
-    # key match regex from http://blogs.aws.amazon.com/security/blog/tag/key+rotation
-    MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | grep -c -P '((?<![A-Z0-9])[A-Z0-9]{20}(?![A-Z0-9])|(?<![A-Za-z0-9/+=])[A-Za-z0-9/+=]{40}(?![A-Za-z0-9/+=]))')
+if [ -z "${GIT_ALLOW_DATA}" ]; then
 
-    if [[ $MATCH -ne 0 ]]; then
-        echo "Found patterns for AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY"
-        echo "Please check your code and remove API keys."
-        echo "If you really want to commit this:\n\n\tGIT_ALLOW_AWS_KEYS=1 git commit"
+    
+  REG='.*\.(xls[sxtm]?|csv|txt|sav|db|sqlite|feather|pkl|pickle|ods|gsheet|RData|Rds)'
+    MATCH=$(git diff --cached --name-only $against | grep -i -P $REG)
+
+    if [[ ! -z $MATCH ]]; then
+        echo -e "\nIt looks like you're trying to commit a file which has been\nlabelled 'OFFICIAL':\n"
+        echo -e "$MATCH"
+        echo -e "\nCheck to ensure that it is ok to commit the file, then run:\n\n\tGIT_ALLOW_OFFICIAL=1 git commit\n\n"
+        echo -e "You can stack these commands if required, like:\n\n\tGIT_ALLOW_DATA=1 GIT_ALLOW_OFFICIAL=1 git commit\n\n"
         exit 1
     fi
 
 fi
 
+# Check for files labelled official #
+#####################################
+
+if [ -z "${GIT_ALLOW_OFFICIAL}" ]; then
+    
+  REG='.*OFFICIAL.*'
+    MATCH=$(git diff --cached --name-only $against | grep -i -P $REG)
+
+    if [[ ! -z $MATCH ]]; then
+        echo -e "\nIt looks like you're trying to commit a file which has been\nlabelled 'OFFICIAL':\n"
+        echo -e "$MATCH"
+        echo -e "\nIdeally you should rename the file, and remove 'OFFICIAL'."
+        echo -e "\nIf you must commit the file without changing the name,\n ensure that the file is OK to commit, then run:\n\n\tGIT_ALLOW_OFFICIAL=1 git commit\n\n"
+        echo -e "You can stack these commands if required, like:\n\n\tGIT_ALLOW_DATA=1 GIT_ALLOW_OFFICIAL=1 git commit\n\n"
+        exit 1
+    fi
+
+fi
+
+# Check for AWS keys #
+######################
+
+if [ -z "${GIT_ALLOW_AWS_KEYS}" ]; then
+
+   REG='((?<![A-Z0-9])[A-Z0-9]{20}(?![A-Z0-9])|(?<![A-Za-z0-9/+=])[A-Za-z0-9/+=]{40}(?![A-Za-z0-9/+=]))'
+    # key match regex from http://blogs.aws.amazon.com/security/blog/tag/key+rotation
+    MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | grep -c -P $REG)
+
+    if [[ $MATCH -ne 0 ]]; then
+        echo -e "Found patterns for AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY"
+        echo -e "Please check your code and remove API keys."
+        echo -e "If you really want to commit this:\n\n\tGIT_ALLOW_AWS_KEYS=1 git commit\n"
+        echo -e "You can stack these commands if required, like:\n\n\tGIT_ALLOW_DATA=1 GIT_ALLOW_OFFICIAL=1 git commit\n\n"
+        exit 1
+    fi
+
+fi
+
+# Check for Private Keys #
+##########################
+
 if [ -z "${GIT_ALLOW_PRIVATE_KEYS}" ]; then
 
+  REG=' PRIVATE KEY'
     # key match regex from http://blogs.aws.amazon.com/security/blog/tag/key+rotation
     MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | grep -c ' PRIVATE KEY')
 
     if [[ $MATCH -ne 0 ]]; then
-        echo "It looks like you're trying to commit a private key."
-        echo "Please check your code and remove any private keys."
-        echo "If you really want to commit this:\n\n\tGIT_ALLOW_PRIVATE_KEYS=1 git commit"
+        echo -e "It looks like you're trying to commit a private key."
+        echo -e "Please check your code and remove any private keys."
+        echo -e "If you really want to commit this:\n\n\tGIT_ALLOW_PRIVATE_KEYS=1 git commit\n"
+        echo -e "You can stack these commands if required, like:\n\n\tGIT_ALLOW_DATA=1 GIT_ALLOW_OFFICIAL=1 git commit\n\n"
         exit 1
     fi
 
 fi
+
+# Check for .pem files #
+########################
 
 if [ -z "${GIT_ALLOW_PEM_FILES}" ]; then
 
+  REG='.*\.pem$'
     # key match regex from http://blogs.aws.amazon.com/security/blog/tag/key+rotation
-    MATCH=$(git diff --cached --name-only $against | grep -P '.pem$')
+    MATCH=$(git diff --cached --name-only $against | grep -P $REG)
 
     if [[ ! -z $MATCH ]]; then
-        echo "It looks like you're trying to commit a PEM file."
-        echo "Please check your code and remove any PEM files."
-        echo "If you really want to commit this:\n\n\tGIT_ALLOW_PEM_FILES=1 git commit"
+        echo -e "It looks like you're trying to commit a PEM file."
+
+        echo -e "Please check your code and remove any PEM files."
+        echo -e "If you really want to commit this:\n\n\tGIT_ALLOW_PEM_FILES=1 git commit\n"
+        echo -e "You can stack these commands if required, like:\n\n\tGIT_ALLOW_DATA=1 GIT_ALLOW_OFFICIAL=1 git commit\n\n"
         exit 1
     fi
 
 fi
 
-[ ! -z "${GIT_ALLOW_MASTER}" ] && exit 0
-
-if test $(git rev-parse --abbrev-ref HEAD) = "master" ; then
-    echo -e "Cannot commit to master by default.\nIf you really think want to then do\n\n\tGIT_ALLOW_MASTER=1 git commit\n"
-    exit 1
-fi
 
 # Local Variables:
 # mode: Shell-Script
