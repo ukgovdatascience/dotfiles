@@ -84,7 +84,7 @@ These hooks will check, at the point of each commit and push, that the the code 
 ** Note that this will overwrite any prior pre-commit and pre-push hooks you may have already installed**
 
 ```bash
-cp -R git_template ~/.git_template
+cp -r git_template ~/.git_template
 
 git config --global init.templatedir '~/.git_template'
 
