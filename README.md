@@ -78,6 +78,14 @@ These hooks will check, at the point of each commit and push, that the the code 
 * AWS keys (determined by regex)
 * Private SSH keys (determined by regex)
 * .pem files
+* Various data formats: 
+  * xls, xlsx, xlsm, xlst, 
+  * csv, txt, 
+  * sav, 
+  * db, sqlite, 
+  * feather, pkl, pickle, 
+  * ods, gsheet, 
+  * Rdata, Rds 
 
 #### Install in all new repositories
 
