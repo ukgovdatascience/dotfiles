@@ -2,7 +2,7 @@
 
 ### Two things to note:
 
-**1) If you are working with data that you don't want to accidentally appear on github the best way to ensure against accidental commits is to ensure that the data are not stored within repository in the first place. However using the tools described here provide a second layer of protection to ensure that accidents don't happen.**
+**1) If you are working with data that you don't want to accidentally appear on github the best way to ensure against accidental commits is to ensure that the data are not stored within repository in the first place. However using the tools described here provide a second layer of protection to ensure that accidents don't happen. That said: employ common sense!**
 
 **2) These are templates, and are best edited to suit your needs.**
 
