@@ -2,6 +2,12 @@
 
 ## Tools to prevent the accidental commit of data to github
 
+### Two things to note:
+
+**If you are working with data that you don't want to accidentally appear on github the best way to ensure against accidental commits is to ensure that the data are not stored within repository in the first place. However using the tools described here provide a second layer of protection to ensure that accidents don't happen.**
+
+**These are templates, and are best edited to suit your needs**
+
 This repo contains:
 
 * A template [.gitignore](.gitignore) file which will prevent git from seeing the most commonly used data formats.
