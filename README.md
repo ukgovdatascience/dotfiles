@@ -1,3 +1,7 @@
+[![GitHub
+tag](https://img.shields.io/github/tag/ukgovdatascience/dotfiles.svg)](https://github.com/ukgovdatascience/dotfiles/releases)
+[![GitHub commits](https://img.shields.io/github/commits-since/ukgovdatascience/dotfiles/0.1.0.svg)]()
+
 # Tools to prevent the accidental commit of sensitive data to github
 
 ### Two things to note:
