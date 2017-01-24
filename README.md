@@ -125,8 +125,28 @@ current=$(pwd); for i in $(ls .); do echo $i; cd $i ; $(git config --path --get 
 
 #### Fix grep for Mac OS X users
 
-Mac OS X seems to have an old grep version by default. to fix this, the homebrew version is a solution:
+Mac OS X seems to have an old grep version by default. to fix this, the homebrew version is a solution.
+If you get the following message when you make a commit:
 
+```
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+        [-e pattern] [-f file] [--binary-files=value] [--color=when]
+        [--context[=num]] [--directories=action] [--label] [--line-buffered]
+        [--null] [pattern] [file ...]
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+        [-e pattern] [-f file] [--binary-files=value] [--color=when]
+        [--context[=num]] [--directories=action] [--label] [--line-buffered]
+        [--null] [pattern] [file ...]
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+        [-e pattern] [-f file] [--binary-files=value] [--color=when]
+        [--context[=num]] [--directories=action] [--label] [--line-buffered]
+        [--null] [pattern] [file ...]
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+        [-e pattern] [-f file] [--binary-files=value] [--color=when]
+        [--context[=num]] [--directories=action] [--label] [--line-buffered]
+        [--null] [pattern] [file ...]
+```
+ you will need to update grep using:
 ```
 brew install grep --with-default-names
 ```
