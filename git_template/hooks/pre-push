@@ -17,7 +17,7 @@ if [ -z "${GIT_ALLOW_DATA}" ]; then
 
     
   REG='.*\.(xls[sxtm]?|csv|txt|sav|db|sqlite|feather|pkl|pickle|ods|gsheet|RData|Rds)'
-    MATCH=$(git diff --cached --name-only $against | grep -i -P $REG)
+    MATCH=$(git diff --cached --name-only $against | ggrep -i -P $REG)
 
     if [[ ! -z $MATCH ]]; then
         printf "\nIt looks like you're trying to commit a data file':\n\n"
@@ -35,7 +35,7 @@ fi
 if [ -z "${GIT_ALLOW_OFFICIAL}" ]; then
     
   REG='.*OFFICIAL.*'
-    MATCH=$(git diff --cached --name-only $against | grep -i -P $REG)
+    MATCH=$(git diff --cached --name-only $against | ggrep -i -P $REG)
 
     if [[ ! -z $MATCH ]]; then
         printf "\nIt looks like you're trying to commit a file which has been\nlabelled 'OFFICIAL':\n\n"
@@ -55,7 +55,7 @@ if [ -z "${GIT_ALLOW_AWS_KEYS}" ]; then
 
    REG='((?<![A-Z0-9])[A-Z0-9]{20}(?![A-Z0-9])|(?<![A-Za-z0-9/+=])[A-Za-z0-9/+=]{40}(?![A-Za-z0-9/+=]))'
     # key match regex from http://blogs.aws.amazon.com/security/blog/tag/key+rotation
-    MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | grep -c -P $REG)
+    MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | ggrep -c -P $REG)
 
     if [[ $MATCH -ne 0 ]]; then
         printf "Found patterns for AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY"
@@ -74,7 +74,7 @@ if [ -z "${GIT_ALLOW_PRIVATE_KEYS}" ]; then
 
   REG=' PRIVATE KEY'
     # key match regex from http://blogs.aws.amazon.com/security/blog/tag/key+rotation
-    MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | grep -c ' PRIVATE KEY')
+    MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | ggrep -c ' PRIVATE KEY')
 
     if [[ $MATCH -ne 0 ]]; then
         printf "It looks like you're trying to commit a private key."
@@ -93,7 +93,7 @@ if [ -z "${GIT_ALLOW_PEM_FILES}" ]; then
 
   REG='.*\.pem$'
     # key match regex from http://blogs.aws.amazon.com/security/blog/tag/key+rotation
-    MATCH=$(git diff --cached --name-only $against | grep -P $REG)
+    MATCH=$(git diff --cached --name-only $against | ggrep -P $REG)
 
     if [[ ! -z $MATCH ]]; then
         printf "It looks like you're trying to commit a PEM file."
