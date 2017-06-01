@@ -58,7 +58,8 @@ if [ -z "${GIT_ALLOW_AWS_KEYS}" ]; then
     MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | ggrep -c -P $REG)
 
     if [[ $MATCH -ne 0 ]]; then
-        printf "Found patterns for AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY"
+        printf "Found patterns for AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY in:"
+        printf "$MATCH\n\n"
         printf "Please check your code and remove API keys."
         printf "If you really want to commit this:\n\n\tGIT_ALLOW_AWS_KEYS=1 git commit\n"
         printf "You can stack these commands if required, like:\n\n\tGIT_ALLOW_DATA=1 GIT_ALLOW_OFFICIAL=1 git commit\n\n"
@@ -77,7 +78,8 @@ if [ -z "${GIT_ALLOW_PRIVATE_KEYS}" ]; then
     MATCH=$(git diff --cached --name-only -z $against | xargs -0 cat | ggrep -c ' PRIVATE KEY')
 
     if [[ $MATCH -ne 0 ]]; then
-        printf "It looks like you're trying to commit a private key."
+        printf "It looks like you're trying to commit a private key in:"
+        printf "$MATCH\n\n"
         printf "Please check your code and remove any private keys."
         printf "If you really want to commit this:\n\n\tGIT_ALLOW_PRIVATE_KEYS=1 git commit\n"
         printf "You can stack these commands if required, like:\n\n\tGIT_ALLOW_DATA=1 GIT_ALLOW_OFFICIAL=1 git commit\n\n"
@@ -96,8 +98,8 @@ if [ -z "${GIT_ALLOW_PEM_FILES}" ]; then
     MATCH=$(git diff --cached --name-only $against | ggrep -P $REG)
 
     if [[ ! -z $MATCH ]]; then
-        printf "It looks like you're trying to commit a PEM file."
-
+        printf "It looks like you're trying to commit a PEM file in:"
+        printf "$MATCH\n\n"
         printf "Please check your code and remove any PEM files."
         printf "If you really want to commit this:\n\n\tGIT_ALLOW_PEM_FILES=1 git commit\n"
         printf "You can stack these commands if required, like:\n\n\tGIT_ALLOW_DATA=1 GIT_ALLOW_OFFICIAL=1 git commit\n\n"

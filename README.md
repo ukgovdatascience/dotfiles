@@ -115,7 +115,7 @@ Having done the previous step, run the following to sync git hooks with the defa
 $(git config --path --get init.templatedir)/update.sh
 ```
 
-#### Install intall all pre-existing repositories in a directory
+#### Install all pre-existing repositories in a directory
 
 The following code will cycle through all directories in a folder (assuming they are all managed by git), and install the default hooks into each of them:
 
