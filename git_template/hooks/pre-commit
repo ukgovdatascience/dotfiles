@@ -9,7 +9,6 @@ else
     against=$(git hash-object -t tree /dev/null)
 fi
 
-
 # Check for common data formats #
 #################################
 
@@ -108,6 +107,25 @@ if [ -z "${GIT_ALLOW_PEM_FILES}" ]; then
 
 fi
 
+# Check for ipynb formats #
+#################################
+
+if [ -z "${GIT_ALLOW_IPYNB}" ]; then
+
+    
+  REG='.*\.(ipynb|IPYNB)'
+    MATCH=$(git diff --cached --name-only $against | ggrep -i -P $REG)
+
+    if [[ ! -z $MATCH ]]; then
+        printf "\nIt looks like you're trying to commit an ipython notebook':\n\n"
+        printf "$MATCH\n\n"
+        printf "Have you checked that no sensitive information is contained in any output chunks?\n"
+        printf "Check to ensure that it is ok to commit the file, then run:\n\n\tGIT_ALLOW_IPYNB=1 git commit"
+        printf "\n\nYou can stack these commands if required, like:\n\n\tGIT_ALLOW_DATA=1 GIT_ALLOW_OFFICIAL=1 git commit\n\n"
+        exit 1
+    fi
+
+fi
 
 # Local Variables:
 # mode: Shell-Script

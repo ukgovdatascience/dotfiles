@@ -96,6 +96,7 @@ These hooks will check, at the point of each commit and push, that the the code 
   * feather, pkl, pickle, 
   * ods, gsheet, 
   * Rdata, Rds 
+  * ipython/jupyer notebooks (ipynb) 
 
 #### Install in all new repositories
 
