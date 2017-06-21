@@ -124,6 +124,10 @@ The following code will cycle through all directories in a folder (assuming they
 current=$(pwd); for i in $(ls .); do echo $i; cd $i ; $(git config --path --get init.templatedir)/update.sh; cd $current done
 ```
 
+#### Clean mac installation
+
+The code has been updated to work with a clean Mac installation. If you get an error it might be due to the type of grep you have installed.
+
 #### Fix grep for Mac OS X users
 
 Mac OS X seems to have an old grep version by default. to fix this, the homebrew version is a solution.
